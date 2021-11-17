@@ -18,6 +18,11 @@ scene.add(light);
 //GLOBAL VARIABLE
 const start_position = 3;
 const end_position = -start_position;
+const TIME_LIMIT = 10;
+let gameStat = "loading";
+let isLookingBackward = true;
+
+const text = document.querySelector(".text");
 
 function createCube(size, positionX, rotY = 0, color = 0xfbc851) {
 	const geometry = new THREE.BoxGeometry(size.w, size.h, size.d);
@@ -48,19 +53,26 @@ class Doll {
 	}
 	lookBackward() {
 		// this.doll.rotation.y = 3.15;
+
 		gsap.to(this.doll.rotation, { y: -3.15, duration: 0.45 });
+		setTimeout(() => (isLookingBackward = true), 150);
 	}
 	lookForward() {
 		// this.doll.rotation.y = 0;
 		gsap.to(this.doll.rotation, { y: 0, duration: 0.45 });
+		setTimeout(() => (isLookingBackward = false), 450);
 	}
 
-	start() {
+	async start() {
 		this.lookBackward();
+		await delay(Math.random() * 1000 + 1000);
+		this.lookForward();
+		await delay(Math.random() * 750 + 750);
+		this.start();
 	}
 }
 // setTimeout(() => {
-// 	doll.lookBackward();
+// 	doll.start();
 // }, 1000);
 //CREATE TRACK FUNCTION
 function createTrack() {
@@ -98,16 +110,57 @@ class Player {
 		// this.playerInfo.velocity = 0;
 		gsap.to(this.playerInfo, { velocity: 0, duration: 0.2 });
 	}
+	check() {
+		if (this.playerInfo.velocity > 0 && !isLookingBackward) {
+			text.innerText = "You Lose";
+			gameStat = "over";
+		}
+		if (this.playerInfo.positionX < end_position + 0.4) {
+			text.innerText = "You Win";
+			gameStat = "won";
+			return;
+		}
+	}
 
 	update() {
+		this.check();
+		this.playerInfo.positionX -= this.playerInfo.velocity;
 		this.player.position.x -= this.playerInfo.velocity;
 	}
 }
 const player = new Player();
-
 let doll = new Doll();
 
+async function init() {
+	await delay(500);
+	text.innerText = `Starting in 3...`;
+	await delay(500);
+	text.innerText = `Starting in 2...`;
+	await delay(500);
+	text.innerText = `Starting in 1...`;
+	await delay(500);
+	text.innerText = `Go`;
+	startGame();
+}
+
+function startGame() {
+	gameStat = "started";
+	let progressBar = createCube({ w: 5, h: 0.1, d: 1 }, 0);
+	progressBar.position.y = 3.35;
+	gsap.to(progressBar.scale, { x: 0, duration: TIME_LIMIT, ease: "none" });
+	doll.start();
+	setTimeout(() => {
+		if (gameStat !== "over") {
+			text.innerText = "You ran out of time";
+			gameStat = "over";
+		}
+	}, TIME_LIMIT * 1000);
+}
+
+init();
+
 function animate() {
+	if (gameStat == "over" || gameStat == "won") return;
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 	player.update();
@@ -123,6 +176,7 @@ function onWindowResize() {
 }
 
 window.addEventListener("keydown", (e) => {
+	if (gameStat !== "started") return;
 	if (e.key == "ArrowUp") {
 		player.run();
 	}
