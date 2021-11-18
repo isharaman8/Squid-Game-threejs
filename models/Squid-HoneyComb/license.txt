@@ -1,0 +1,11 @@
+Model Information:
+* title:	Squid Game HoneyComb Shapes
+* source:	https://sketchfab.com/3d-models/squid-game-honeycomb-shapes-1fb7104b75e94fb5854633b1b3117779
+* author:	anevans33 (https://sketchfab.com/anevans33)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Squid Game HoneyComb Shapes" (https://sketchfab.com/3d-models/squid-game-honeycomb-shapes-1fb7104b75e94fb5854633b1b3117779) by anevans33 (https://sketchfab.com/anevans33) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
